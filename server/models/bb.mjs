@@ -12,6 +12,10 @@ const Schema = mongoose.Schema
 
 const blackBusinessSchema = new Schema({
   // define all the black business stuff in here
+  name: {},
+  location: {},
+  rating: {},
+  reviews: {},
 
 }, {timestamps: true});
 

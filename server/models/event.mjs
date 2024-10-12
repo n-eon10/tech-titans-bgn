@@ -12,7 +12,9 @@ const Schema = mongoose.Schema
 
 const eventSchema = new Schema({
   // define all the event stuff in here
-
+  name: {},
+  location: {},
+  rating: {}
 }, {timestamps: true});
 
 const Event = mongoose.model("Event", eventSchema);
