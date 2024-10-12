@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
+import userRoutes from "./routes/user.mjs";
 
 dotenv.config()
 
@@ -22,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 //routes
+app.use("/api/users", userRoutes);
 
 // start the Express server and connect to database
 
@@ -35,3 +36,5 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((error) => {
     console.log(error);
   })
+
+  

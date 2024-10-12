@@ -14,7 +14,11 @@ const eventSchema = new Schema({
   // define all the event stuff in here
   name: {},
   location: {},
-  rating: {}
+  date: {
+    type: Date
+  },
+  reviews: [{}],
+
 }, {timestamps: true});
 
 const Event = mongoose.model("Event", eventSchema);
