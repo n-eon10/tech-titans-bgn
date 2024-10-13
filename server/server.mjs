@@ -3,6 +3,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.mjs";
+import blackBusinessRoutes from "./routes/bb.mjs"
+import eventRoutes from "./routes/event.mjs"
 
 dotenv.config()
 
@@ -23,6 +25,8 @@ app.use((req, res, next) => {
 
 //routes
 app.use("/api/users", userRoutes);
+app.use("/api/blackbusinesses", blackBusinessRoutes);
+app.use("/api/events", eventRoutes);
 
 // start the Express server and connect to database
 

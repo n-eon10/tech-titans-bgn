@@ -12,12 +12,19 @@ const Schema = mongoose.Schema
 
 const eventSchema = new Schema({
   // define all the event stuff in here
-  name: {},
-  location: {},
+  name: {
+    type: String
+  },
+  location: {
+    type: String
+  },
   date: {
     type: Date
   },
-  reviews: [{}],
+  reviews: [{
+    type: String,
+    username: String
+  }],
 
 }, {timestamps: true});
 

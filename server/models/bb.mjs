@@ -21,7 +21,10 @@ const blackBusinessSchema = new Schema({
   rating: {
     type: Number
   },
-  reviews: [{}],
+  reviews: [{
+    username: String,
+    review: String
+  }],
   category: {
     type: String
   },

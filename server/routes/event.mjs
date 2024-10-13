@@ -8,3 +8,5 @@ router.get("/getallevents", getAllEvents);
 router.get("getevent/:eventid", getOneEvent);
 
 router.post("/createevent", createEvent);
+
+export default router;
