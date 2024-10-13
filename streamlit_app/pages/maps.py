@@ -31,6 +31,8 @@ print(pins)  # Verify the positions are now in the correct format
 def show():
     st.title("WeOutside")
 
+    st.image("Google_logo_crop.jpg", use_column_width=True)
+
     #sidebar
     with st.sidebar:
         #st.button("Home", on_click=go_to_page, args=('explore',), type="secondary", disabled=False, use_container_width=False)
@@ -48,13 +50,15 @@ def show():
         pitch=50
     )
 
+    
+
     # Create the PyDeck layer using the pins data
     layer = pdk.Layer(
         "ScatterplotLayer",  # ScatterplotLayer is great for point data
         pins,  # The list of pins as data
         get_position="position",  # Field in data that contains positions (longitude, latitude)
         get_fill_color=[255, 0, 0],  # Optional: set color for the points (red in this case)
-        get_radius=20,  # Radius of each point (in meters)
+        get_radius=80,  # Radius of each point (in meters)
         pickable=True,  # Enable interaction with points
     )
 
