@@ -31,7 +31,7 @@ print(pins)  # Verify the positions are now in the correct format
 def show():
     st.title("WeOutside")
 
-    st.image("Google_logo_crop.jpg", use_column_width=True)
+    st.image("Google_logo_clear.jpg", use_column_width=True)
 
     #sidebar
     with st.sidebar:

@@ -1,4 +1,4 @@
 import streamlit as st
 
 def search_input():
-    return st.text_input("Search", "")
+    return st.text_input("", "")
