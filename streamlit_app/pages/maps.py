@@ -30,7 +30,15 @@ print(pins)  # Verify the positions are now in the correct format
 
 def show():
     st.title("WeOutside")
-    search_query = search_input()
+
+    #sidebar
+    with st.sidebar:
+        #st.button("Home", on_click=go_to_page, args=('explore',), type="secondary", disabled=False, use_container_width=False)
+        st.header("Events Near You")
+        st.text_area("Event Title1","Event Description: .....")
+        st.text_area("Event Title2","Event Description: .....")
+        st.text_area("Event Title3","Event Description: .....")
+        st.text_area("Event Title4","Event Description: .....")
 
     # Initialize map view
     initial_view_state = pdk.ViewState(
@@ -46,7 +54,7 @@ def show():
         pins,  # The list of pins as data
         get_position="position",  # Field in data that contains positions (longitude, latitude)
         get_fill_color=[255, 0, 0],  # Optional: set color for the points (red in this case)
-        get_radius=200,  # Radius of each point (in meters)
+        get_radius=20,  # Radius of each point (in meters)
         pickable=True,  # Enable interaction with points
     )
 
@@ -59,6 +67,8 @@ def show():
 
     # Display the PyDeck map in Streamlit
     st.pydeck_chart(map)
+
+    search_query = search_input()
 
 # Call the show function to display the map
 if __name__ == "__main__":
