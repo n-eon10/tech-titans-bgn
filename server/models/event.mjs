@@ -18,13 +18,18 @@ const eventSchema = new Schema({
   location: {
     type: String
   },
+  generalLocation: {
+    type: String
+  },
   date: {
     type: Date
   },
-  reviews: [{
-    type: String,
-    username: String
-  }],
+  description: {
+    type: String
+  },
+  link: {
+    type: String
+  }
 
 }, {timestamps: true});
 

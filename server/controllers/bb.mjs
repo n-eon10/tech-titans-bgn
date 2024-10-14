@@ -66,9 +66,9 @@ export const getOneBlackBusiness = async (req, res) => {
 };
 
 export const createBlackBusiness = async (req, res) => {
-  const {name, location, rating, reviews} = req.body;
+  const {name, description, location, generalLocation, date, rating, reviews, link} = req.body;
     try {
-        const newBusiness = await BlackBusiness.create({name, location, rating, reviews});
+        const newBusiness = await BlackBusiness.create({name, description, location, generalLocation, date, rating, reviews, link});
 
         res.status(200).json({
           success: true,

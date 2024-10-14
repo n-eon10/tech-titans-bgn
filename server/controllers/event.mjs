@@ -1,4 +1,5 @@
 import Event from "../models/event.mjs";
+import mongoose from "mongoose";
 
 //define get all events 
 export const getAllEvents = async (req,res) => {
@@ -63,10 +64,10 @@ export const getOneEvent = async (req,res) => {
 
 // define creating event 
 export const createEvent = async (req, res) => {
-  const {name, location, ratings} = req.body; //making sure that the information we need to create the event has been given
+  const {name, description, location, generalLocation, date, link} = req.body; //making sure that the information we need to create the event has been given
   
   try {
-    const createEvent = await Event.create({name, location, ratings}); // using the info from line 49 to create a new rating in the db
+    const createEvent = await Event.create({name, description, location, generalLocation, date: new Date(date), link}); // using the info from line 49 to create a new rating in the db
     res.status(200).json({ // 200 indicates the request was succesfull 
         success: true, // 
         events: createEvent
@@ -92,7 +93,7 @@ export const createEvent = async (req, res) => {
 //define getting upcoming events
 export const upcomingEvents = async(req, res) => {
   try {
-    const upcomingEvents = await upcomingEvents.find({}).sort({date: -1}).limit(10);
+    const upcomingEvents = await Event.find({}).sort({date: -1}).limit(10);
 
     res.status(200).json({
       success: true,

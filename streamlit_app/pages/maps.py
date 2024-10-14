@@ -1,56 +1,78 @@
 import streamlit as st
 import pydeck as pdk
-#from data_manager import fetch_data, prepare_data_for_map
-from components import search_input
-from utils import go_to_page
 import requests
+import geocoder
+from geopy.distance import geodesic  # Import geodesic to calculate distances
 
-# Fetch data from APIs
-bbfetch = requests.get("http://localhost:4000/api/blackbusinesses/getallblackbusiness")
-eventsfetch = requests.get("http://localhost:4000/api/events/getallevents")  # Update the correct endpoint for events
+def generate_pins():
+    """Fetch data from APIs and generate map pins from Black businesses and events."""
+    # Fetch data from APIs
+    bbfetch = requests.get("http://localhost:4000/api/blackbusinesses/getallblackbusiness")
+    eventsfetch = requests.get("http://localhost:4000/api/events/getallevents")  # Update the correct endpoint for events
 
-# Parse the response as JSON
-bb = bbfetch.json().get('data', [])  # Safely retrieve the 'data' key
-events = eventsfetch.json().get('events', [])  # Safely retrieve the 'events' key
+    # Parse the response as JSON
+    bb = bbfetch.json().get('data', [])  # Safely retrieve the 'data' key
+    events = eventsfetch.json().get('events', [])  # Safely retrieve the 'events' key
 
-# Create a list of pins (markers) from black businesses and events
-pins = []
+    locations = []
 
-# Convert string positions to lists of [longitude, latitude]
-for i in bb:
-    # Convert the string '51.47376257787879, -0.06546801834152499' into [51.47376257787879, -0.06546801834152499]
-    lat, lon = map(float, i['location'].split(','))
-    pins.append({'position': [lon, lat], 'description': '', 'title': i['name']})
+    for i in bb:
+        # Convert the string '51.47376257787879, -0.06546801834152499' into [51.47376257787879, -0.06546801834152499]
+        lat, lon = map(float, i['location'].split(','))
+        locations.append({'position': [lon, lat], 'description': '', 'title': i['name']})
 
-for i in events:
-    lat, lon = map(float, i['location'].split(','))
-    pins.append({'position': [lon, lat], 'description': '', 'title': i['name']})
+    for i in events:
+        lat, lon = map(float, i['location'].split(','))
+        locations.append({'position': [lon, lat], 'description': i['description'], 'title': i['name']})
 
-print(pins)  # Verify the positions are now in the correct format
+    return locations
+
+
+def find_nearest_events(user_location, events):
+    """Find and return events sorted by proximity to user location."""
+    nearby_events = []
+    
+    for event in events:
+        event_location = event['position']  # This is [lon, lat]
+        event_latlon = (event_location[1], event_location[0])  # Convert to (lat, lon)
+        distance = geodesic(user_location, event_latlon).kilometers  # Calculate distance in kilometers
+        event['distance'] = distance  # Add distance to event info
+        nearby_events.append(event)
+
+    # Sort events by distance (nearest first)
+    nearby_events.sort(key=lambda x: x['distance'])
+    return nearby_events[:4]  # Return the top 4 nearest events
+
+
+pins = generate_pins()
+
 
 def show():
+    """Main function to display the map and nearest events."""
     st.title("WeOutside")
 
-    st.image("Google_logo_clear.jpg", use_column_width=True)
-
-    #sidebar
-    with st.sidebar:
-        #st.button("Home", on_click=go_to_page, args=('explore',), type="secondary", disabled=False, use_container_width=False)
-        st.header("Events Near You")
-        st.text_area("Event Title1","Event Description: .....")
-        st.text_area("Event Title2","Event Description: .....")
-        st.text_area("Event Title3","Event Description: .....")
-        st.text_area("Event Title4","Event Description: .....")
+    # Get user's current location using geocoder
+    user_location = geocoder.ip('me').latlng  # Get [lat, lon] of the user
 
     # Initialize map view
     initial_view_state = pdk.ViewState(
-        latitude=51.5043,  # Center the map at a default location (London in this case)
-        longitude=-0.1232,
+        latitude=user_location[0],
+        longitude=user_location[1],
         zoom=11,
         pitch=50
     )
 
-    
+    # Find the nearest events to the user
+    nearest_events = find_nearest_events(user_location, pins)
+
+    # Sidebar: Display nearest events
+    with st.sidebar:
+        st.header("Events Near You")
+
+        for i, event in enumerate(nearest_events):
+            st.text_area(f"Event {i+1}: {event['title']}",
+                         f"Description: {event['description']}\n"
+                         f"Distance: {event['distance']:.2f} km")
 
     # Create the PyDeck layer using the pins data
     layer = pdk.Layer(
@@ -58,7 +80,7 @@ def show():
         pins,  # The list of pins as data
         get_position="position",  # Field in data that contains positions (longitude, latitude)
         get_fill_color=[255, 0, 0],  # Optional: set color for the points (red in this case)
-        get_radius=80,  # Radius of each point (in meters)
+        get_radius=20,  # Radius of each point (in meters)
         pickable=True,  # Enable interaction with points
     )
 
@@ -72,7 +94,7 @@ def show():
     # Display the PyDeck map in Streamlit
     st.pydeck_chart(map)
 
-    search_query = search_input()
+
 
 # Call the show function to display the map
 if __name__ == "__main__":

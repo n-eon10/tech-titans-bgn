@@ -18,6 +18,12 @@ const blackBusinessSchema = new Schema({
   location: {
     type: String
   },
+  generalLocation: {
+    type: String
+  },
+  description: {
+    type: String 
+  },
   rating: {
     type: Number
   },
